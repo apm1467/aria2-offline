@@ -1,0 +1,19 @@
+version: '3'
+services:
+  web:
+    build: ./web
+    volumes:
+      - ./web/downloads:/var/www/downloads/
+    links:
+      - redis
+
+  redis:
+    image: redis
+    command: redis-server
+
+  nginx:
+    build: ./nginx
+    ports:
+      - "8000:80"
+    links:
+      - web
