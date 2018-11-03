@@ -2,7 +2,7 @@ import os
 from os.path import (isfile, join)
 import time
 import redis
-from flask import (Blueprint, render_template, request)
+from flask import (Blueprint, render_template, request, send_from_directory)
 from . import settings
 
 bp = Blueprint('index', __name__)
@@ -28,6 +28,10 @@ def index():
     files = get_file_list()
     return render_template('index.html', err=err, disk_space=disk_space, files=files)
 
+@bp.route(settings.FILE_DOWNLOAD_URL + '<filename>')
+def download(filename):
+    return send_from_directory(join(settings.FILE_BASE_DIR), filename)
+
 
 def delete_file(file_name):
     rds.delete(file_name)
@@ -50,7 +54,7 @@ def get_file_list():
     files = []
 
     for name in file_names:
-        path = os.path.join(base_dir, name)
+        path = join(base_dir, name)
         stat = os.stat(path)
         # download isn't finished if the .aria2 temp file exists
         finished = not (name + '.aria2' in temp_names)
@@ -68,7 +72,7 @@ def get_file_list():
             'display_name': display_name,
             'size': convert_bytes(stat.st_size),
             'mtime': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(stat.st_mtime)),
-            'url': path,
+            'url': settings.FILE_DOWNLOAD_URL + real_name,
             'finished': finished
         })
 
@@ -85,5 +89,3 @@ def convert_bytes(num):
             return "%3.1f%s" % (num, unit)
         num /= 1024.0
     return "%3.1f%s" % (num, 'TB')
-
-
