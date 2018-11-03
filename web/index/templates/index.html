@@ -8,6 +8,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+    <script src="{{ url_for('static', filename='jquery-3.3.1.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
 </head>
 
 <body>
@@ -16,44 +18,62 @@
         <h1><a href="/">Download Repository</a></h1>
     </header>
 
-    <h3>Disk Space:</h3>
-    <table class="table disk-space">
-        <thead>
-            <tr><td>Total Size</td><td>Used</td><td>Available</td></tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td>{{ disk_space['total'] }}</td>
-                <td>{{ disk_space['used'] }}</td>
-                <td>{{ disk_space['avail'] }}</td>
-            </tr>
-        </tbody>
-    </table>
 
-    <h3>File List:</h3>
-    <table class="table table-striped">
-        {% for file in files %}
-            <tr>
-                {% if file['finished'] %}
-                    <td><span class="glyphicon glyphicon-ok"></span></td>
-                    <td><a href="{{ file['url'] }}">{{ file['display_name'] }}</a></td>
-                {% else %}
-                    <td><span class="glyphicon glyphicon-download"></span></td>
-                    <td>{{ file['display_name'] }}</td>
-                {% endif %}
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#list">File List</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#downloader">Download</a>
+        </li>
+    </ul>
 
-                <td>{{ file['mtime'] }}</td>
-                <td>{{ file['size'] }}</td>
+    <div class="tab-content">
+        <div id="list" class="container tab-pane active"><br>
+            <h3>Disk Space:</h3>
+            <table class="table disk-space">
+                <thead>
+                    <tr><td>Total Size</td><td>Used</td><td>Available</td></tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{ disk_space['total'] }}</td>
+                        <td>{{ disk_space['used'] }}</td>
+                        <td>{{ disk_space['avail'] }}</td>
+                    </tr>
+                </tbody>
+            </table>
 
-                <form method="post">
-                    <td><input type="text" name="new_name" size="10" placeholder="New name" class="form-control"></td>
-                    <td><input type="submit" name="submit" value="Set New Name" class="btn btn-success"></td>
-                    <td><input type="submit" name="submit" value="Delete File" class="btn btn-danger"></td>
-                    <input type="hidden" name="file_name" value="{{ file['name'] }}">
-                </form>
-            </tr>
-        {% endfor %}
-    </table>
+            <h3>File List:</h3>
+            <table class="table table-striped">
+                {% for file in files %}
+                    <tr>
+                        {% if file['finished'] %}
+                            <td><span class="glyphicon glyphicon-ok"></span></td>
+                            <td><a href="{{ file['url'] }}">{{ file['display_name'] }}</a></td>
+                        {% else %}
+                            <td><span class="glyphicon glyphicon-download"></span></td>
+                            <td>{{ file['display_name'] }}</td>
+                        {% endif %}
+
+                        <td>{{ file['mtime'] }}</td>
+                        <td>{{ file['size'] }}</td>
+
+                        <form method="post">
+                            <td><input type="text" name="new_name" size="10" placeholder="New name" class="form-control"></td>
+                            <td><input type="submit" name="submit" value="Set New Name" class="btn btn-success"></td>
+                            <td><input type="submit" name="submit" value="Delete File" class="btn btn-danger"></td>
+                            <input type="hidden" name="file_name" value="{{ file['name'] }}">
+                        </form>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+
+        <div id="downloader" class="container tab-pane fade"><br>
+            <object data="/ariang/index.html" class="ariang"></object>
+        </div>
+    </div>
 </div>
 
 {% if err %}

@@ -22,3 +22,7 @@ input[type="text"] {
 table.disk-space {
     max-width: 600px;
 }
+.ariang {
+    width: 100%;
+    height: calc(100vh - 160px);
+}
