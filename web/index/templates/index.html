@@ -17,7 +17,7 @@
     </header>
 
     <h3>Disk Space:</h3>
-    <table class="table" style="max-width: 600px;">
+    <table class="table disk-space">
         <thead>
             <tr><td>Total Size</td><td>Used</td><td>Available</td></tr>
         </thead>
@@ -39,14 +39,14 @@
                     <td><a href="{{ file['url'] }}">{{ file['display_name'] }}</a></td>
                 {% else %}
                     <td><span class="glyphicon glyphicon-download"></span></td>
-                    <td>{{ file['display_name'] }}<</td>
+                    <td>{{ file['display_name'] }}</td>
                 {% endif %}
 
                 <td>{{ file['mtime'] }}</td>
                 <td>{{ file['size'] }}</td>
 
                 <form method="post">
-                    <td><input type="text" name="new_name" size="10" placeholder="New name"></td>
+                    <td><input type="text" name="new_name" size="10" placeholder="New name" class="form-control"></td>
                     <td><input type="submit" name="submit" value="Set New Name" class="btn btn-success"></td>
                     <td><input type="submit" name="submit" value="Delete File" class="btn btn-danger"></td>
                     <input type="hidden" name="file_name" value="{{ file['name'] }}">
@@ -62,4 +62,3 @@
 
 </body>
 </html>
-

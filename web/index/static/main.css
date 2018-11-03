@@ -19,3 +19,6 @@ input[type="text"] {
 .table > tbody > tr > td {
      vertical-align: middle;
 }
+table.disk-space {
+    max-width: 600px;
+}
