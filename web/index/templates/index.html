@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <title>Download Repository</title>
+    <meta name="description" content="Download Repository" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+</head>
+
+<body>
+<div class="container">
+    <header>
+        <h1><a href="/">Download Repository</a></h1>
+    </header>
+
+    <h3>Disk Space:</h3>
+    <table class="table" style="max-width: 600px;">
+        <thead>
+            <tr><td>Total Size</td><td>Used</td><td>Available</td></tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ disk_space['total'] }}</td>
+                <td>{{ disk_space['used'] }}</td>
+                <td>{{ disk_space['avail'] }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h3>File List:</h3>
+    <table class="table table-striped">
+        {% for file in files %}
+            <tr>
+                {% if file['finished'] %}
+                    <td><span class="glyphicon glyphicon-ok"></span></td>
+                    <td><a href="{{ file['url'] }}">{{ file['name'] }}</a></td>
+                {% else %}
+                    <td><span class="glyphicon glyphicon-download"></span></td>
+                    <td>{{ file['name'] }}<</td>
+                {% endif %}
+
+                <td>{{ file['mtime'] }}</td>
+                <td>{{ file['size'] }}</td>
+
+                <form method="post">
+                    <td><input type="text" name="new_name" size="10" placeholder="New name"></td>
+                    <td><input type="submit" name="set" value="Set New Name" class="btn btn-success"></td>
+                    <td><input type="submit" name="delete" value="Delete File" class="btn btn-danger"></td>
+                    <input type="hidden" name="file_id" value="'.$file_id.'">
+                </form>
+            </tr>
+        {% endfor %}
+    </table>
+</div>
+</body>
+</html>
+
