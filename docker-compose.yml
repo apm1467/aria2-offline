@@ -4,6 +4,7 @@ services:
     build: ./web
     volumes:
       - ./web/downloads:/var/www/downloads/
+      - ./web/:/usr/src/app
     links:
       - redis
 
