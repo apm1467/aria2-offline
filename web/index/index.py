@@ -1,19 +1,41 @@
 import os
+from os.path import (isfile, join)
 import time
-from flask import (
-    Blueprint, flash, g, redirect, render_template, request, url_for
-)
+import redis
+from flask import (Blueprint, render_template, request)
 from . import settings
 
-
 bp = Blueprint('index', __name__)
+rds = redis.StrictRedis(host='redis', port=6379, db=0, decode_responses=True)
 
-@bp.route('/')
+
+@bp.route('/', methods=('GET', 'POST'))
 def index():
+    err = ''
+    if request.method == 'POST':
+        file_name = request.form['file_name']
+        if request.form['submit'] == 'Set New Name':
+            new_name = request.form['new_name']
+            if new_name:
+                rds.set(file_name, new_name)
+            else:
+                err = 'File name can not be empty.'
+        else:
+            # request.form['submit'] == 'Delete File'
+            delete_file(file_name)
+
     disk_space = get_disk_space()
     files = get_file_list()
-    return render_template('index.html', disk_space=disk_space, files=files)
+    return render_template('index.html', err=err, disk_space=disk_space, files=files)
 
+
+def delete_file(file_name):
+    rds.delete(file_name)
+    os.remove(join(settings.FILE_BASE_DIR, file_name))
+    try:
+        os.remove(join(settings.FILE_BASE_DIR, file_name + '.aria2'))
+    except FileNotFoundError:
+        pass
 
 def get_disk_space():
     import subprocess
@@ -22,8 +44,8 @@ def get_disk_space():
 
 def get_file_list():
     base_dir = settings.FILE_BASE_DIR
-    names = [f for f in os.listdir(base_dir) if os.path.isfile(os.path.join(base_dir, f))]
-    temp_names = filter(lambda f: f.endswith('.aria2'), names) # aria2 temp file
+    names = [f for f in os.listdir(base_dir) if isfile(join(base_dir, f))]
+    temp_names = filter(lambda f: f.endswith('.aria2'), names)  # aria2 temp file
     file_names = filter(lambda f: not f.endswith('.aria2'), names)
     files = []
 
@@ -32,8 +54,18 @@ def get_file_list():
         stat = os.stat(path)
         # download isn't finished if the .aria2 temp file exists
         finished = not (name + '.aria2' in temp_names)
+        display_name = get_file_display_name(name)
+
+        # rename file with the user given name if download is finished
+        real_name = name
+        if finished and real_name != display_name:
+            os.rename(path, join(base_dir, display_name))
+            rds.delete(real_name)
+            real_name = display_name
+
         files.append({
-            'name': name,
+            'name': real_name,
+            'display_name': display_name,
             'size': convert_bytes(stat.st_size),
             'mtime': time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(stat.st_mtime)),
             'url': path,
@@ -41,6 +73,11 @@ def get_file_list():
         })
 
     return files
+
+def get_file_display_name(file_name):
+    if rds.exists(file_name):
+        return rds.get(file_name)
+    return file_name
 
 def convert_bytes(num):
     for unit in ['bytes', 'KB', 'MB', 'GB']:
