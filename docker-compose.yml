@@ -16,5 +16,6 @@ services:
     build: ./nginx
     ports:
       - "8000:80"
+      - "6800:6800"
     links:
       - web
