@@ -49,8 +49,8 @@ def get_disk_space():
 def get_file_list():
     base_dir = settings.FILE_BASE_DIR
     names = [f for f in os.listdir(base_dir) if isfile(join(base_dir, f))]
-    temp_names = filter(lambda f: f.endswith('.aria2'), names)  # aria2 temp file
-    file_names = filter(lambda f: not f.endswith('.aria2'), names)
+    temp_names = [f for f in names if f.endswith('.aria2')]  # aria2 temp file
+    file_names = [f for f in names if not f.endswith('.aria2')]
     files = []
 
     for name in file_names:
