@@ -43,7 +43,7 @@ def delete_file(file_name):
 
 def get_disk_space():
     import subprocess
-    _, total, used, avail, _, _ = subprocess.getoutput('df -h | grep /usr/src/app').split()
+    _, total, used, avail, _, _ = subprocess.getoutput('df -h | grep /etc/hosts').split()
     return {'total': total, 'used': used, 'avail': avail}
 
 def get_file_list():
