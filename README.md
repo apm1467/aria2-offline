@@ -16,7 +16,10 @@ Aria2-Offline lets you download files using your Linux server, so your local com
 
 ## Screenshots
 
+#### File List
 <img width="600" src="https://user-images.githubusercontent.com/10210967/47960288-eadc7500-dff8-11e8-825b-63798cfb3cd6.png">
+
+#### Download Manager
 <img width="600" src="https://user-images.githubusercontent.com/10210967/47960221-c502a080-dff7-11e8-9719-88b16acd2cf2.png">
 
 ## Install
