@@ -2,14 +2,17 @@
 
 ## Introduction
 
-Aria2-Offline lets you download files using your Linux server, so your local computer can be offline. Once download is finished, you can easily get the files from your server to your local machine.
+Aria2-Offline lets you download files using your Linux server, so your local computer can be offline. Once the download is finished, you can easily get the files from your server to your local machine.
 
 ## Features
 
 - Easy to install
 - Easy to use
 - Great download speed powered by [aria2](https://github.com/aria2/aria2)
+- Show remaining disk space of you server 
+- Auto detect whether download is finished
 - You can change file names even when download is not finished
+- You can even start an offline download from you mobile phone
 
 ## Screenshots
 
@@ -24,7 +27,7 @@ Aria2-Offline lets you download files using your Linux server, so your local com
 $ git clone https://github.com/apm1467/aria2-offline.git
 ```
 
-2. Install [`docker`](https://docs.docker.com/install/#supported-platforms) and [`docker-compose`](https://docs.docker.com/compose/install/#install-compose) if you haven't; Make sure port `8000` and `6800` of your server is usable
+2. Install [`docker`](https://docs.docker.com/install/#supported-platforms) and [`docker-compose`](https://docs.docker.com/compose/install/#install-compose) if you haven't yet; Make sure the ports `8000` and `6800` of your server are usable
 
 3. Build & start containers
 ```
@@ -34,9 +37,8 @@ $ docker-compose up -d --build
 
 4. Go to `http://your_server_ip:8000` in browser; default user is `example` and password is `passwd`
 
-5. Fill you server address into AriaNg settings and it should connect successfully
+5. You can start a download now
 
-<img width="800" src="https://user-images.githubusercontent.com/10210967/47960330-0b58ff00-dffa-11e8-8bdd-b08a7f8f46eb.png">
 
 ## Config
 
@@ -49,6 +51,28 @@ $ cd aria2-offline/
 $ docker-compose down
 $ docker-compose up -d --build
 ```
+
+After changing the Aria2 RPC Secret Token, remember to update it in the AriaNg download manager too:
+
+<img width="600" src="https://user-images.githubusercontent.com/10210967/47975191-233d8b00-e0ad-11e8-8356-e73e1dbd0f09.png">
+
+## Technical Details
+
+### Why is port `6800` needed
+
+This project uses the terrific Aria2 frontend [AriaNg](https://github.com/mayswind/AriaNg) as the download manager. It is written in pure html & javascript, so it runs in your browser and connects back to your server and talks with aria2 RPC at port `6800`.
+
+### How does finish-detection works
+
+When aria2 donwloads a file, it will create a temp file with the name `origional_file_name.aria2`. When download is finished, this temp file will disappear. Aria2-Offline uses this fact to detect whether the download is finished. 
+
+### Why can I change file name when download is not finished
+
+Aria2-Offline caches the new name you give in a database. The actual file name will be changed automatically after the download is finished.
+
+### Where are downloaded files stored on the server
+
+Files are stored at `aria2-offline/web/downloads`.
 
 ## Thanks
 
