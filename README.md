@@ -64,7 +64,9 @@ This project uses the terrific Aria2 frontend [AriaNg](https://github.com/mayswi
 
 ### How does finish-detection works
 
-When aria2 donwloads a file, it will create a temp file with the name `origional_file_name.aria2`. When download is finished, this temp file will disappear. Aria2-Offline uses this fact to detect whether the download is finished. 
+When aria2 donwloads a file, it will create a temp file with the name `original_file_name.aria2`. When download is finished, this temp file will disappear. Aria2-Offline uses this fact to detect whether the download is finished.
+
+Sometimes the temp file is created several seconds later after the download is started. To handle this case, a file will only be detected as finished if it is older than 10 seconds. 
 
 ### Why can I change file name when download is not finished
 
