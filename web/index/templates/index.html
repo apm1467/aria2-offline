@@ -45,29 +45,33 @@
             </table>
 
             <h3>File List:</h3>
-            <table class="table table-striped">
-                {% for file in files %}
-                    <tr>
-                        {% if file['finished'] %}
-                            <td><span class="glyphicon glyphicon-ok"></span></td>
-                            <td><a href="{{ file['url'] }}">{{ file['display_name'] }}</a></td>
-                        {% else %}
-                            <td><span class="glyphicon glyphicon-download"></span></td>
-                            <td>{{ file['display_name'] }}</td>
-                        {% endif %}
+            {% if files %}
+                <table class="table table-striped">
+                    {% for file in files %}
+                        <tr>
+                            {% if file['finished'] %}
+                                <td><span class="glyphicon glyphicon-ok"></span></td>
+                                <td><a href="{{ file['url'] }}">{{ file['display_name'] }}</a></td>
+                            {% else %}
+                                <td><span class="glyphicon glyphicon-download"></span></td>
+                                <td>{{ file['display_name'] }}</td>
+                            {% endif %}
 
-                        <td>{{ file['mtime'] }}</td>
-                        <td>{{ file['size'] }}</td>
+                            <td>{{ file['mtime'] }}</td>
+                            <td>{{ file['size'] }}</td>
 
-                        <form method="post">
-                            <td><input type="text" name="new_name" size="10" placeholder="New name" class="form-control"></td>
-                            <td><input type="submit" name="submit" value="Set New Name" class="btn btn-success"></td>
-                            <td><input type="submit" name="submit" value="Delete File" class="btn btn-danger"></td>
-                            <input type="hidden" name="file_name" value="{{ file['name'] }}">
-                        </form>
-                    </tr>
-                {% endfor %}
-            </table>
+                            <form method="post">
+                                <td><input type="text" name="new_name" size="10" placeholder="New name" class="form-control"></td>
+                                <td><input type="submit" name="submit" value="Set New Name" class="btn btn-success"></td>
+                                <td><input type="submit" name="submit" value="Delete File" class="btn btn-danger"></td>
+                                <input type="hidden" name="file_name" value="{{ file['name'] }}">
+                            </form>
+                        </tr>
+                    {% endfor %}
+                </table>
+            {% else %}
+                <p>No file yet.</p>
+            {% endif %}
         </div>
 
         <div id="downloader" class="tab-pane fade"><br>
