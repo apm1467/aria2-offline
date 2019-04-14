@@ -7,10 +7,12 @@ services:
       - ./web/:/usr/src/app
     links:
       - redis
+    restart: unless-stopped
 
   redis:
     image: redis
     command: redis-server
+    restart: unless-stopped
 
   nginx:
     build: ./nginx
@@ -19,3 +21,4 @@ services:
       - "6800:6800"
     links:
       - web
+    restart: unless-stopped
